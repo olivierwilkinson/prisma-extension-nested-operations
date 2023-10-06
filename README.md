@@ -1,20 +1,20 @@
 <div align="center">
 <h1>Prisma Extension Nested Operations</h1>
 
-<p>Prisma Extension library that allows modifying operations on nested relation in a Prisma query.</p>
+<p>Prisma Extension library that allows modifying operations on nested relations in a Prisma query.</p>
 
 <p>
   Vanilla Prisma extensions are great for modifying top-level queries but
   are still difficult to use when they must handle
-  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, includes, selects,
-  or modify where objects that reference relations.
+  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, `include`s, `select`s,
+  or modify `where` objects that reference relations.
   This is talked about in greater depth in this<a href="https://github.com/prisma/prisma/issues/4211">issue regarding nested middleware</a>, the
   same issues apply to extensions.
 </p>
 
 <p>
-  This library exports a withNestedOperations helper that splits an $allOperations hook into $rootOperation and
-  $allNestedOperations hooks.
+  This library exports a `withNestedOperations` helper that splits an `$allOperations` hook into `$rootOperation` and
+  `$allNestedOperations` hooks.
 </p>
 
 </div>
