@@ -13,8 +13,8 @@
 </p>
 
 <p>
-  This library exports a withNestedOperations helper that splits an $allOperations hook into $rootOperation and
-  $allNestedOperations hooks.
+  This library exports a `withNestedOperations` helper that splits an `$allOperations()` hook into `$rootOperation()` and
+  `$allNestedOperations()` hooks.
 </p>
 
 </div>
@@ -34,8 +34,8 @@
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [\$rootOperation](#%5Crootoperation)
-  - [\$allNestedOperations Params](#%5Callnestedoperations-params)
+  - [`$rootOperation()`](#%5Crootoperation)
+  - [`$allNestedOperations()` Params](#%5Callnestedoperations-params)
   - [Nested Writes](#nested-writes)
     - [Changing Nested Write Operations](#changing-nested-write-operations)
     - [Write Results](#write-results)
@@ -60,21 +60,21 @@ This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's dependencies:
 
 ```
-npm install --save prisma-extension-nested-operations
+npm install prisma-extension-nested-operations
 ```
 
 `@prisma/client` is a peer dependency of this library, so you will need to
 install it if you haven't already:
 
 ```
-npm install --save @prisma/client
+npm install @prisma/client
 ```
 
 You must have at least @prisma/client version 4.16.0 installed.
 
 ## Usage
 
-The `withNestedOperations` function takes and object with two properties, `$rootOperation` and `$allNestedOperations`.
+The `withNestedOperations()` function takes and object with two properties, `$rootOperation()` and `$allNestedOperations()`.
 The return value is an `$allOperations` hook, so it can be passed directly to an extensions `$allOperations` hook.
 
 ```javascript
@@ -102,15 +102,15 @@ client.$extends({
 });
 ```
 
-### \$rootOperation
+### `$rootOperation()`
 
-The `$rootOperation` hook is called with the same params as the `$allOperations` hook, however the `params.args` object
+The `$rootOperation()` hook is called with the same params as the `$allOperations` hook, however the `params.args` object
 has been updated by the args passed to the `$allNestedOperations` query functions. The same pattern applies to the
 returned result, it is the result of the query updated by the returned results from the `$allNestedOperations` calls.
 
-### \$allNestedOperations Params
+### `$allNestedOperations` Params
 
-The params object passed to the $allNestedOperations function is similar to the params passed to $allOperations.
+The params object passed to the `$allNestedOperations` function is similar to the params passed to `$allOperations`.
 It has `args`, `model`, `operation`, and `query` fields, however there are some key differences:
 
 - the `operation` field adds the following options: 'connectOrCreate', 'connect', 'disconnect', 'include', 'select' and 'where'
@@ -166,7 +166,7 @@ type Operation =
 
 ### Nested Writes
 
-The \$allNestedOperations function is called for every [nested write](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes)
+The `$allNestedOperations()` function is called for every [nested write](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes)
 operation in the query. The `operation` field is set to the operation being performed, for example "create" or "update".
 The `model` field is set to the model being operated on, for example "User" or "Post".
 
@@ -185,7 +185,7 @@ const result = await client.user.update({
 });
 ```
 
-The \$allNestedOperations function will be called with:
+The `$allNestedOperations()` function will be called with:
 
 ```javascript
 {
@@ -203,7 +203,7 @@ The \$allNestedOperations function will be called with:
 }
 ```
 
-Some nested writes can be passed as an array of operations. In this case the \$allNestedOperations function is called for each
+Some nested writes can be passed as an array of operations. In this case the `$allNestedOperations()` function is called for each
 operation in the array. For example take the following query:
 
 ```javascript
@@ -219,7 +219,7 @@ const result = await client.user.update({
 });
 ```
 
-The \$allNestedOperations function will be called with:
+The `$allNestedOperations()` function will be called with:
 
 ```javascript
  {
@@ -257,7 +257,7 @@ and
 
 #### Changing Nested Write Operations
 
-The \$allNestedOperations function can change the operation that is performed on the model. For example take the following query:
+The `$allNestedOperations()` function can change the operation that is performed on the model. For example take the following query:
 
 ```javascript
 const result = await client.user.update({
@@ -272,7 +272,7 @@ const result = await client.user.update({
 });
 ```
 
-The \$allNestedOperations function could be used to change the operation to `upsert`:
+The `$allNestedOperations()` function could be used to change the operation to `upsert`:
 
 ```javascript
 const client = _client.$extends({
@@ -301,7 +301,7 @@ const client = _client.$extends({
 });
 ```
 
-The final query would be modified by the above \$allNestedOperations to:
+The final query would be modified by the above `$allNestedOperations()` to:
 
 ```javascript
 const result = await client.user.update({
@@ -338,7 +338,7 @@ const result = await client.user.update({
 });
 ```
 
-Using the same \$allNestedOperations defined before the update operation would be changed to an upsert operation, however there is
+Using the same `$allNestedOperations()` defined before the update operation would be changed to an upsert operation, however there is
 already an upsert operation so the two operations are merged into a upsert operation array with the new operation added to
 the end of the array. When the existing operation is already a list of operations the new operation is added to the end of
 the list. The final query in this case would be:
@@ -461,7 +461,7 @@ const result = await client.user.create({
 
 #### Write Results
 
-The `query` function of \$allNestedOperations calls for nested write operations always return `undefined` as their result.
+The `query` function of `$allNestedOperations()` calls for nested write operations always return `undefined` as their result.
 This is because the results returned from the root query may not include the data for a particular nested write.
 
 For example take the following query:
@@ -549,7 +549,7 @@ The where object above produces a call for "posts" relation found in the where o
 }
 ```
 
-Relations found inside where AND, OR and NOT logical operators are also found and called with the \$allNestedOperations function,
+Relations found inside where AND, OR and NOT logical operators are also found and called with the `$allNestedOperations()` function,
 however the `where` operation is not called for the logical operators themselves. For example take the following query:
 
 ```javascript
@@ -576,7 +576,7 @@ const result = await client.user.findMany({
 });
 ```
 
-The \$allNestedOperations function will be called with the params for "posts" similarly to before, however it will also be called
+The `$allNestedOperations()` function will be called with the params for "posts" similarly to before, however it will also be called
 with the following params:
 
 ```javascript
@@ -599,7 +599,7 @@ Since the "comments" relation is found inside the "AND" logical operator the
 \$allNestedOperations is called for it. The `modifier` field is set to "every" since the where object is in the "every" field and
 the `logicalOperators` field is set to `['AND']` since the where object is inside the "AND" logical operator.
 
-Notice that the \$allNestedOperations function is not called for the first item in the "AND" array, this is because the first item
+Notice that the `$allNestedOperations()` function is not called for the first item in the "AND" array, this is because the first item
 does not contain any relations.
 
 The `logicalOperators` field tracks all the logical operators between the `parentParams` and the current params. For
@@ -627,7 +627,7 @@ const result = await client.user.findMany({
 });
 ```
 
-The \$allNestedOperations function will be called with the following params:
+The `$allNestedOperations()` function will be called with the following params:
 
 ```javascript
 {
@@ -659,7 +659,7 @@ const result = await client.user.findMany({
 });
 ```
 
-The \$allNestedOperations function will be called with the following params:
+The `$allNestedOperations()` function will be called with the following params:
 
 ```javascript
 {
@@ -694,7 +694,7 @@ const result = await client.user.findMany({
 });
 ```
 
-For the "profile" relation the \$allNestedOperations function will be called with:
+For the "profile" relation the `$allNestedOperations()` function will be called with:
 
 ```javascript
 {
@@ -705,7 +705,7 @@ For the "profile" relation the \$allNestedOperations function will be called wit
 }
 ```
 
-and for the "posts" relation the \$allNestedOperations function will be called with:
+and for the "posts" relation the `$allNestedOperations()` function will be called with:
 
 ```javascript
 {
@@ -733,7 +733,7 @@ const result = await client.user.findMany({
 });
 ```
 
-The \$allNestedOperations function for the "profile" relation will be called with:
+The `$allNestedOperations()` function for the "profile" relation will be called with:
 
 ```javascript
 {
@@ -848,7 +848,7 @@ const result = await client.user.findMany({
 });
 ```
 
-and for the "posts" relation the \$allNestedOperations function will be called with:
+and for the "posts" relation the `$allNestedOperations()` function will be called with:
 
 ```javascript
 {
@@ -859,7 +859,7 @@ and for the "posts" relation the \$allNestedOperations function will be called w
 }
 ```
 
-For the "profile" relation the \$allNestedOperations function will be called with:
+For the "profile" relation the `$allNestedOperations()` function will be called with:
 
 ```javascript
 {
@@ -900,7 +900,7 @@ const result = await client.user.create({
 });
 ```
 
-The \$allNestedOperations function will be called with the following params for the "profile" relation:
+The `$allNestedOperations()` function will be called with the following params for the "profile" relation:
 
 ```javascript
 {
@@ -940,8 +940,8 @@ and the following params for the "posts" relation:
 
 ### Modifying Nested Write Params
 
-When writing extensions that modify the params of a query you should first write the $rootOperation hook as if it were
-an $allOperations hook, and then add the \$allNestedOperations hook.
+When writing extensions that modify the params of a query you should first write the `$rootOperation()` hook as if it were
+an `$allOperations()` hook, and then add the `$allNestedOperations()` hook.
 
 Say you are writing middleware that sets a default value when creating a model for a particular model:
 
@@ -1020,7 +1020,7 @@ const client = _client.$extends({
 
 ### Modifying Where Params
 
-When writing extensions that modify the where params of a query you should first write the $rootOperation hook as
+When writing extensions that modify the where params of a query you should first write the `$rootOperation()` hook as
 if it were an $allOperations hook, this is because the `where` operation is not called for the root where object and so you
 will need to handle it manually.
 
@@ -1094,8 +1094,8 @@ const client = _client.$extends({
 
 When writing extensions that modify the results of a query you should take the following process:
 
-- handle all the root cases in the $rootOperation hook the same way you would with a $allOperations hook.
-- handle nested results using the `include` and `select` operations in the \$allNestedOperations hook.
+- handle all the root cases in the `$rootOperation()` hook the same way you would with a $allOperations hook.
+- handle nested results using the `include` and `select` operations in the `$allNestedOperations()` hook.
 
 Say you are writing middleware that adds a timestamp to the results of a query. You would first handle the root cases:
 
