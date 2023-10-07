@@ -1,20 +1,20 @@
 <div align="center">
 <h1>Prisma Extension Nested Operations</h1>
 
-<p>Prisma Extension library that allows modifying operations on nested relation in a Prisma query.</p>
+<p>Prisma Extension library that allows modifying operations on nested relations in a Prisma query.</p>
 
 <p>
   Vanilla Prisma extensions are great for modifying top-level queries but
   are still difficult to use when they must handle
-  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, includes, selects,
-  or modify where objects that reference relations.
-  This is talked about in greater depth in this<a href="https://github.com/prisma/prisma/issues/4211">issue regarding nested middleware</a>, the
-  same issues apply to extensions.
+  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, <code>include</code>s, <code>select</code>s,
+  or modify <code>where</code> objects that reference relations.
+  This is talked about in greater depth in this <a href="https://github.com/prisma/prisma/issues/4211">issue regarding nested middleware</a>, and the
+  same issue applies to extensions.
 </p>
 
 <p>
-  This library exports a `withNestedOperations` helper that splits an `$allOperations()` hook into `$rootOperation()` and
-  `$allNestedOperations()` hooks.
+  This library exports a <code>withNestedOperations()</code> helper that splits an <code>$allOperations()</code> hook into <code>$rootOperation()</code> and
+  <code>$allNestedOperations()</code> hooks.
 </p>
 
 </div>
@@ -104,13 +104,13 @@ client.$extends({
 
 ### `$rootOperation()`
 
-The `$rootOperation()` hook is called with the same params as the `$allOperations` hook, however the `params.args` object
-has been updated by the args passed to the `$allNestedOperations` query functions. The same pattern applies to the
-returned result, it is the result of the query updated by the returned results from the `$allNestedOperations` calls.
+The `$rootOperation()` hook is called with the same params as the `$allOperations()` hook, however the `params.args` object
+has been updated by the args passed to the `$allNestedOperations()` query functions. The same pattern applies to the
+returned result, it is the result of the query updated by the returned results from the `$allNestedOperations()` calls.
 
-### `$allNestedOperations` Params
+### `$allNestedOperations()` Params
 
-The params object passed to the `$allNestedOperations` function is similar to the params passed to `$allOperations`.
+The params object passed to the `$allNestedOperations()` function is similar to the params passed to `$allOperations()`.
 It has `args`, `model`, `operation`, and `query` fields, however there are some key differences:
 
 - the `operation` field adds the following options: 'connectOrCreate', 'connect', 'disconnect', 'include', 'select' and 'where'
@@ -1021,7 +1021,7 @@ const client = _client.$extends({
 ### Modifying Where Params
 
 When writing extensions that modify the where params of a query you should first write the `$rootOperation()` hook as
-if it were an $allOperations hook, this is because the `where` operation is not called for the root where object and so you
+if it were an `$allOperations()` hook, this is because the `where` operation is not called for the root where object and so you
 will need to handle it manually.
 
 Say you are writing an extension that excludes models with a particular field, let's call it "invisible" rather than
@@ -1094,7 +1094,7 @@ const client = _client.$extends({
 
 When writing extensions that modify the results of a query you should take the following process:
 
-- handle all the root cases in the `$rootOperation()` hook the same way you would with a $allOperations hook.
+- handle all the root cases in the `$rootOperation()` hook the same way you would with a `$allOperations()` hook.
 - handle nested results using the `include` and `select` operations in the `$allNestedOperations()` hook.
 
 Say you are writing middleware that adds a timestamp to the results of a query. You would first handle the root cases:
