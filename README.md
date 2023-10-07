@@ -34,8 +34,8 @@
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [`$rootOperation()`](#%5Crootoperation)
-  - [`$allNestedOperations()` Params](#%5Callnestedoperations-params)
+  - [`$rootOperation()`](#rootoperation)
+  - [`$allNestedOperations()` Params](#allnestedoperations-params)
   - [Nested Writes](#nested-writes)
     - [Changing Nested Write Operations](#changing-nested-write-operations)
     - [Write Results](#write-results)
