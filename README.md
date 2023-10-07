@@ -6,15 +6,15 @@
 <p>
   Vanilla Prisma extensions are great for modifying top-level queries but
   are still difficult to use when they must handle
-  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, `include`s, `select`s,
-  or modify `where` objects that reference relations.
-  This is talked about in greater depth in this<a href="https://github.com/prisma/prisma/issues/4211">issue regarding nested middleware</a>, the
-  same issues apply to extensions.
+  <a href="https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes">nested writes</a>, <code>include</code>s, <code>select</code>s,
+  or modify <code>where</code> objects that reference relations.
+  This is talked about in greater depth in this <a href="https://github.com/prisma/prisma/issues/4211">issue regarding nested middleware</a>, and the
+  same issue applies to extensions.
 </p>
 
 <p>
-  This library exports a `withNestedOperations` helper that splits an `$allOperations` hook into `$rootOperation` and
-  `$allNestedOperations` hooks.
+  This library exports a <code>withNestedOperations</code> helper that splits an <code>$allOperations</code> hook into <code>$rootOperation</code> and
+  <code>$allNestedOperations</code> hooks.
 </p>
 
 </div>
