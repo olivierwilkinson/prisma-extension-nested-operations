@@ -18,7 +18,7 @@ export type NestedWriteOperation =
   | "updateMany"
   | "delete"
   | "deleteMany";
-  
+
 export type NestedOperation =
   | NestedWriteOperation
   | NestedReadOperation
