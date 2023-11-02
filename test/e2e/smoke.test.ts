@@ -1,5 +1,6 @@
 import { Post, Prisma, User } from "@prisma/client";
 import faker from "faker";
+import { set } from "lodash";
 
 import { withNestedOperations } from "../../src";
 import client from "./client";
@@ -195,6 +196,67 @@ describe("smoke", () => {
       });
 
       expect(groupBy).toHaveLength(1);
+    });
+  });
+
+  describe("Changing Operations", () => {
+    beforeAll(() => {
+      testClient = client.$extends({
+        query: {
+          $allModels: {
+            $allOperations: withNestedOperations({
+              $rootOperation: ({ model, operation, args, query }) => {
+                if (model === "User" && operation === "updateMany") {
+                  return client.user.deleteMany({
+                    where: { id: args.where?.id },
+                  });
+                }
+
+                return query(args);
+              },
+              $allNestedOperations: ({ model, operation, args, query }) => {
+                if (model === "Profile" && operation === "update") {
+                  return query(true, "delete");
+                }
+                return query(args);
+              },
+            }),
+          },
+        },
+      });
+    });
+
+    it("changes root operation", async () => {
+      await testClient.user.updateMany({
+        where: { id: firstUser.id },
+        data: {
+          email: faker.internet.email(),
+        },
+      });
+      const dbUser = await testClient.user.findUnique({
+        where: { id: firstUser.id },
+      });
+      expect(dbUser).toBeNull();
+    });
+
+    it("changes nested operation", async () => {
+      await testClient.user.update({
+        where: { id: firstUser.id },
+        data: {
+          profile: {
+            update: {
+              bio: faker.lorem.sentence(),
+            },
+          },
+        },
+      });
+      const dbUser = await testClient.user.findUnique({
+        where: { id: firstUser.id },
+        include: {
+          profile: true,
+        },
+      });
+      expect(dbUser.profile).toBeNull();
     });
   });
 });

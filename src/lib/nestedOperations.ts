@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Types } from "@prisma/client/runtime/library";
 
-import { OperationCall, NestedParams, ExecuteFunction } from "./types";
+import { OperationCall, NestedParams } from "./types";
 import { extractNestedOperations } from "./utils/extractNestedOperations";
 import { executeOperation } from "./utils/execution";
 import { buildArgsFromCalls } from "./utils/params";
@@ -43,7 +43,6 @@ export function withNestedOperations<
 }): typeof $rootOperation {
   return async (rootParams) => {
     let calls: OperationCall<ExtArgs>[] = [];
-    let finalCall: OperationCall<ExtArgs> | null = null;
 
     try {
       const executionResults = await Promise.allSettled(
@@ -71,18 +70,11 @@ export function withNestedOperations<
         calls,
         rootParams as NestedParams<ExtArgs>
       );
-      
-      // evaluate result from parent middleware
-      finalCall = await executeOperation(
-        $rootOperation as ExecuteFunction<ExtArgs>,
-        { ...rootParams, args: updatedArgs } as NestedParams<ExtArgs>,
-        { operation: rootParams.operation as any }
-      );
-      
-      const queryResult = await rootParams.query(finalCall.updatedArgs);
-      finalCall.queryPromise.resolve(queryResult);
 
-      const result = await finalCall.result;
+      const result = await $rootOperation({
+        ...rootParams,
+        args: updatedArgs,
+      });
 
       // bail out if result is null
       if (result === null) {
@@ -156,9 +148,6 @@ export function withNestedOperations<
 
       return result;
     } catch (e) {
-      // reject final next function promise to stop it being pending forever
-      finalCall?.queryPromise.reject(e);
-
       // if an error occurs reject the nested next functions promises to stop
       // them being pending forever
       calls.forEach((call) => call.queryPromise.reject(e));
