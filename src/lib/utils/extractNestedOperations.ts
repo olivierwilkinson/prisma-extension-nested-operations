@@ -444,58 +444,6 @@ export function extractRelationReadOperations<
           )
         );
       }
-
-      // push select nested in an include
-      if (operation === "include" && arg.select) {
-        const nestedSelectOperationInfo = {
-          params: {
-            model,
-            operation: "select" as const,
-            args: arg.select,
-            scope: {
-              parentParams: readOperationInfo.params,
-              relations: readOperationInfo.params.scope.relations,
-            },
-            query: params.query,
-          },
-          target: {
-            field: "include" as const,
-            operation: "select" as const,
-            relationName: relation.name,
-            parentTarget,
-          },
-        };
-
-        nestedOperations.push(nestedSelectOperationInfo);
-
-        if (nestedSelectOperationInfo.params.args?.where) {
-          const whereOperationInfo = {
-            target: {
-              operation: "where" as const,
-              relationName: relation.name,
-              readOperation: "select" as const,
-              parentTarget: nestedSelectOperationInfo.target,
-            },
-            params: {
-              model: nestedSelectOperationInfo.params.model,
-              operation: "where" as const,
-              args: nestedSelectOperationInfo.params.args.where,
-              scope: {
-                parentParams: nestedSelectOperationInfo.params,
-                relations: nestedSelectOperationInfo.params.scope.relations,
-              },
-              query: params.query,
-            },
-          };
-          nestedOperations.push(whereOperationInfo);
-          nestedOperations.push(
-            ...extractRelationWhereOperations(
-              whereOperationInfo.params,
-              whereOperationInfo.target
-            )
-          );
-        }
-      }
     });
   });
 

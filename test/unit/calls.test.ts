@@ -36,8 +36,9 @@ type OperationCall<Model extends Prisma.ModelName> = {
   logicalOperators?: LogicalOperator[];
 };
 
-function nestedParamsFromCall<Model extends Prisma.ModelName,
-ExtArgs extends Types.Extensions.InternalArgs = Types.Extensions.DefaultArgs
+function nestedParamsFromCall<
+  Model extends Prisma.ModelName,
+  ExtArgs extends Types.Extensions.InternalArgs = Types.Extensions.DefaultArgs
 >(
   rootParams: NestedParams<ExtArgs>,
   call: OperationCall<Model>
@@ -2398,24 +2399,6 @@ describe("calls", () => {
         },
         {
           operation: "select",
-          model: "Post",
-          argsPath: "args.include.posts.select",
-          relations: {
-            to: getModelRelation("User", "posts"),
-            from: getModelRelation("Post", "author"),
-          },
-          scope: {
-            operation: "include",
-            model: "Post",
-            argsPath: "args.include.posts",
-            relations: {
-              to: getModelRelation("User", "posts"),
-              from: getModelRelation("Post", "author"),
-            },
-          },
-        },
-        {
-          operation: "select",
           model: "Comment",
           argsPath: "args.include.posts.select.comments",
           relations: {
@@ -2517,33 +2500,6 @@ describe("calls", () => {
             relations: {
               to: getModelRelation("User", "posts"),
               from: getModelRelation("Post", "author"),
-            },
-          },
-        },
-        {
-          operation: "select",
-          model: "Comment",
-          argsPath: "args.include.posts.include.comments.select",
-          relations: {
-            to: getModelRelation("Post", "comments"),
-            from: getModelRelation("Comment", "post"),
-          },
-          scope: {
-            operation: "include",
-            model: "Comment",
-            argsPath: "args.include.posts.include.comments",
-            relations: {
-              to: getModelRelation("Post", "comments"),
-              from: getModelRelation("Comment", "post"),
-            },
-            scope: {
-              operation: "include",
-              model: "Post",
-              argsPath: "args.include.posts",
-              relations: {
-                to: getModelRelation("User", "posts"),
-                from: getModelRelation("Post", "author"),
-              },
             },
           },
         },
@@ -3652,24 +3608,6 @@ describe("calls", () => {
         },
         {
           operation: "select",
-          model: "Post",
-          argsPath: "args.include.posts.select",
-          relations: {
-            to: getModelRelation("User", "posts"),
-            from: getModelRelation("Post", "author"),
-          },
-          scope: {
-            operation: "include",
-            model: "Post",
-            argsPath: "args.include.posts",
-            relations: {
-              to: getModelRelation("User", "posts"),
-              from: getModelRelation("Post", "author"),
-            },
-          },
-        },
-        {
-          operation: "select",
           model: "Comment",
           argsPath: "args.include.posts.select.comments",
           relations: {
@@ -4115,10 +4053,12 @@ describe("calls", () => {
       ],
     },
   ])(
-    "calls middleware with $description",
+    "calls $allNestedOperations with $description",
     async ({ rootParams, nestedCalls = [] }) => {
       const $rootOperation = jest.fn((params) => params.query(params.args));
-      const $allNestedOperations = jest.fn((params) => params.query(params.args));
+      const $allNestedOperations = jest.fn((params) =>
+        params.query(params.args)
+      );
       const allOperations = withNestedOperations({
         $rootOperation,
         $allNestedOperations,

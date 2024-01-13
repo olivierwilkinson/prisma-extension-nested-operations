@@ -959,6 +959,51 @@ describe("args", () => {
     });
   });
 
+  it("can modify select args nested in include select", async () => {
+    const allOperations = withNestedOperations({
+      $rootOperation: (params) => params.query(params.args),
+      $allNestedOperations: (params) => {
+        if (params.operation === "select" && params.model === "Comment") {
+          return params.query({
+            where: { deleted: true },
+          });
+        }
+        return params.query(params.args);
+      },
+    });
+
+    const query = jest.fn((_: any) => Promise.resolve(null));
+    const params = createParams(query, "User", "create", {
+      data: {
+        email: faker.internet.email(),
+      },
+      include: {
+        posts: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    });
+
+    await allOperations(params);
+
+    expect(query).toHaveBeenCalledWith({
+      ...params.args,
+      include: {
+        posts: {
+          select: {
+            comments: {
+              where: {
+                deleted: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  });
+
   it("can add data to nested createMany args", async () => {
     const allOperations = withNestedOperations({
       $rootOperation: (params) => {
