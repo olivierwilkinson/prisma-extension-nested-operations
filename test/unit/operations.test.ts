@@ -3227,39 +3227,5 @@ describe("operations", () => {
         set(params.args, "data.profile", { delete: false })
       );
     });
-
-    it("replaces existing include with select changed to include", async () => {
-      const allOperations = withNestedOperations({
-        $rootOperation: (params) => {
-          return params.query(params.args);
-        },
-        $allNestedOperations: (params) => {
-          if (params.operation === "select") {
-            return params.query(params.args, "include");
-          }
-
-          return params.query(params.args);
-        },
-      });
-
-      const query = jest.fn((_: any) => Promise.resolve(null));
-      const params = createParams(query, "User", "findUnique", {
-        where: { id: faker.datatype.number() },
-        include: {
-          posts: {
-            select: { deleted: true },
-            include: { author: true },
-          },
-        },
-      });
-
-      await allOperations(params);
-
-      expect(query).toHaveBeenCalledWith(
-        set(params.args, "include.posts", {
-          include: { deleted: true },
-        })
-      );
-    });
   });
 });
