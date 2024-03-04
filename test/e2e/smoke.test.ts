@@ -1,6 +1,5 @@
 import { Post, Prisma, User } from "@prisma/client";
 import faker from "faker";
-import { set } from "lodash";
 
 import { withNestedOperations } from "../../src";
 import client from "./client";
