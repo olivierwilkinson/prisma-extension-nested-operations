@@ -1,5 +1,6 @@
 import faker from "faker";
-import { get, set } from "lodash";
+import get from "lodash/get";
+import set from "lodash/set";
 
 import { withNestedOperations } from "../../src";
 import { createParams } from "./helpers/createParams";

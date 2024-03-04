@@ -1,5 +1,9 @@
 import { Types } from "@prisma/client/runtime/library";
-import { merge, omit, get, set, unset } from "lodash";
+import merge from "lodash/merge";
+import omit from "lodash/omit";
+import get from "lodash/get";
+import set from "lodash/set";
+import unset from "lodash/unset";
 
 import {
   OperationCall,

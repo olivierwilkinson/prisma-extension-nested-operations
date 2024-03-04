@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Types } from "@prisma/client/runtime/library";
 import faker from "faker";
-import { get } from "lodash";
+import get from "lodash/get";
 
 import { withNestedOperations, NestedParams } from "../../src";
 import { relationsByModel } from "../../src/lib/utils/relations";
