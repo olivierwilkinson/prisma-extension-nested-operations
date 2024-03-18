@@ -86,10 +86,10 @@ export function withNestedOperations<
       // add id symbols to result so we can use them to update result relations
       // with the results from nested middleware
       addIdSymbolsToResult(result);
-
+      const dataPath = rootParams.__internalParams.dataPath;
       const nestedNextResults = await Promise.all(
         calls.map(async (call) => {
-          const relationsPath = buildTargetRelationPath(call.target);
+          const relationsPath = buildTargetRelationPath(call.target).filter(path => !dataPath.includes(path));
 
           if (result === null || !relationsPath) {
             call.queryPromise.resolve(undefined);
